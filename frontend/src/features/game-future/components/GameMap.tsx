@@ -1,8 +1,7 @@
 import Ground from './Ground';
-import Target from './Target';
 import { Sky } from '@react-three/drei';
 
-const Map = () => {
+const GameMap = () => {
     return (
       <>
         <directionalLight position={[0, 1, 1]} intensity={5} />
@@ -17,4 +16,4 @@ const Map = () => {
     );
 };
 
-export default Map;
+export default GameMap;
