@@ -4,10 +4,12 @@ import * as THREE from "three";
 import DebugCubeProducer from "../features/debug/components/DebugCubeProducer";
 import GameMap from "../features/game-future/components/GameMap";
 import PlacePlayerOperation from "../features/game-future/components/PlacePlayerOperation";
+import { SignalingServer } from "../components/webrtc/SignalingServer";
 
 function App() {
   return (
     <>
+      <SignalingServer />
       <Canvas style={{ width: "100vw", height: "100vh" }}>
         <Physics>
           <GameMap />

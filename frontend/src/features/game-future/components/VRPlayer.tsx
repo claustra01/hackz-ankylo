@@ -132,7 +132,6 @@ export const VRPlayer = () => {
 
     return (
       <>
-        <SignalingServer />
         <XR store={store}>
           <Physics gravity={[0, -9.81, 0]}>
             <mesh ref={leftMeshRef} scale={[0.01, 0.01, 0.01]}>
