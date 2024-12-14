@@ -3,6 +3,7 @@
 import { useCallback, useState } from "react";
 import { RTCConfig } from "../utils/const";
 
+// scaledrone client
 // biome-ignore lint: should be global
 let drone: any;
 // scaledrone room
