@@ -19,7 +19,11 @@ const GameMap = ({ targetInfos }: GameMapProps) => {
 				azimuth={0.25}
 			/>
 			{targetInfos.map((targetInfo) => (
-				<Target key={targetInfo.id} targetInfo={targetInfo} banishThis={targetInfo.banishThis} />
+				<Target
+					key={targetInfo.id}
+					targetInfo={targetInfo}
+					banishThis={targetInfo.banishThis}
+				/>
 			))}
 		</>
 	);
