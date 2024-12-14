@@ -10,7 +10,7 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
-    "@types/socket.io": "^2.1.2",
+    "@types/socket.io": "^2.1.13",
     "ts-node": "^10.9.2"
   },
   "dependencies": {
