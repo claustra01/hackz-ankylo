@@ -29,14 +29,16 @@ const WebRTC = () => {
 	};
 
 	const handleConnect = () => {
+		// generate room id with fragment hash
 		if (!location.hash) {
 			location.hash = Math.floor(Math.random() * 0xffffff).toString(16);
 		}
 		const chatHash = location.hash.substring(1);
 		const roomName = `observable-${chatHash}`;
+
+		// signaling server (scaledrone)
 		// @ts-ignore
 		drone = new window.Scaledrone("yiS12Ts5RdNhebyM");
-
 		drone.on("open", (error: unknown) => {
 			if (error) {
 				return console.error(error);
@@ -48,20 +50,18 @@ const WebRTC = () => {
 				}
 				console.log("Connected to signaling server");
 			});
-			// We're connected to the room and received an array of 'members'
-			// connected to the room (including us). Signaling server is ready.
 			// @ts-ignore
 			room.on("members", (members) => {
 				if (members.length >= 3) {
 					return alert("The room is full");
 				}
-				// If we are the second user to connect to the room we will be creating the offer
+				// 1st: waiter, 2nd: offerer
 				const isOfferer = members.length === 2;
 				startWebRTC(isOfferer);
 			});
 		});
 
-		// Send signaling data via Scaledrone
+		// singnaling message sender
 		function sendSignalingMessage(message: unknown) {
 			drone.publish({
 				room: roomName,
@@ -69,12 +69,11 @@ const WebRTC = () => {
 			});
 		}
 
+		// peer connection
 		function startWebRTC(isOfferer: boolean) {
 			console.log("Starting WebRTC in as", isOfferer ? "offerer" : "waiter");
 			pc = new RTCPeerConnection(RTCConfig);
-
-			// 'onicecandidate' notifies us whenever an ICE agent needs to deliver a
-			// message to the other peer through the signaling server
+			// send ICE candidate if needed
 			// @ts-ignore
 			pc.onicecandidate = (event) => {
 				if (event.candidate) {
@@ -83,7 +82,7 @@ const WebRTC = () => {
 			};
 
 			if (isOfferer) {
-				// If user is offerer let them create a negotiation offer and set up the data channel
+				// offerer: create negotiation offer
 				pc.onnegotiationneeded = () => {
 					pc.createOffer(localDescCreated, (error: unknown) =>
 						console.error(error),
@@ -92,7 +91,7 @@ const WebRTC = () => {
 				dataChannel = pc.createDataChannel("chat");
 				setupDataChannel();
 			} else {
-				// If user is not the offerer let wait for a data channel
+				// waiter: wait offerer
 				// @ts-ignore
 				pc.ondatachannel = (event) => {
 					dataChannel = event.channel;
@@ -103,11 +102,11 @@ const WebRTC = () => {
 			startListentingToSignals();
 		}
 
+		// signaling message listener
 		function startListentingToSignals() {
-			// Listen to signaling data from Scaledrone
 			// @ts-ignore
 			room.on("data", (message, client) => {
-				// Message was sent by us
+				// own message
 				if (client.id === drone.clientId) {
 					return;
 				}
@@ -120,7 +119,7 @@ const WebRTC = () => {
 								"pc.remoteDescription.type",
 								pc.remoteDescription.type,
 							);
-							// When receiving an offer lets answer it
+							// create answer
 							if (pc.remoteDescription.type === "offer") {
 								console.log("Answering offer");
 								pc.createAnswer(localDescCreated, (error: unknown) =>
@@ -131,12 +130,13 @@ const WebRTC = () => {
 						(error: unknown) => console.error(error),
 					);
 				} else if (message.candidate) {
-					// Add the new ICE candidate to our connections remote description
+					// add the new ICE candidate to our connections remote description
 					pc.addIceCandidate(new RTCIceCandidate(message.candidate));
 				}
 			});
 		}
 
+		// local description
 		function localDescCreated(desc: unknown) {
 			pc.setLocalDescription(
 				desc,
@@ -145,7 +145,7 @@ const WebRTC = () => {
 			);
 		}
 
-		// Hook up data channel event handlers
+		// data channel
 		function setupDataChannel() {
 			checkDataChannelState();
 			dataChannel.onopen = checkDataChannelState;
@@ -157,6 +157,7 @@ const WebRTC = () => {
 			};
 		}
 
+		// data channel state
 		function checkDataChannelState() {
 			console.log("WebRTC channel state is:", dataChannel.readyState);
 			if (dataChannel.readyState === "open") {
@@ -165,7 +166,7 @@ const WebRTC = () => {
 		}
 	};
 
-	const handleSend = () => {
+	const handleSendText = () => {
 		if (text === "") return;
 		console.log(dataChannel.readyState);
 		dataChannel.send(JSON.stringify(text));
@@ -191,7 +192,7 @@ const WebRTC = () => {
 					))}
 				</div>
 				<input type="text" value={text} onChange={handleInputText} />
-				<button type="button" onClick={handleSend}>
+				<button type="button" onClick={handleSendText}>
 					Send
 				</button>
 			</div>
