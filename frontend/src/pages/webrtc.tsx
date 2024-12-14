@@ -41,14 +41,15 @@ const WebRTC = () => {
 		}
 		const chatHash = location.hash.substring(1);
 		const roomName = `observable-${chatHash}`;
+    // @ts-ignore
 		drone = new window.Scaledrone("yiS12Ts5RdNhebyM");
 
-		drone.on("open", (error) => {
+		drone.on("open", (error: unknown) => {
 			if (error) {
 				return console.error(error);
 			}
 			room = drone.subscribe(roomName);
-			room.on("open", (error) => {
+			room.on("open", (error: unknown) => {
 				if (error) {
 					return console.error(error);
 				}
@@ -56,6 +57,7 @@ const WebRTC = () => {
 			});
 			// We're connected to the room and received an array of 'members'
 			// connected to the room (including us). Signaling server is ready.
+      // @ts-ignore
 			room.on("members", (members) => {
 				if (members.length >= 3) {
 					return alert("The room is full");
@@ -67,7 +69,7 @@ const WebRTC = () => {
 		});
 
 		// Send signaling data via Scaledrone
-		function sendSignalingMessage(message) {
+		function sendSignalingMessage(message: unknown) {
 			drone.publish({
 				room: roomName,
 				message,
@@ -80,6 +82,7 @@ const WebRTC = () => {
 
 			// 'onicecandidate' notifies us whenever an ICE agent needs to deliver a
 			// message to the other peer through the signaling server
+      // @ts-ignore
 			pc.onicecandidate = (event) => {
 				if (event.candidate) {
 					sendSignalingMessage({ candidate: event.candidate });
@@ -89,12 +92,13 @@ const WebRTC = () => {
 			if (isOfferer) {
 				// If user is offerer let them create a negotiation offer and set up the data channel
 				pc.onnegotiationneeded = () => {
-					pc.createOffer(localDescCreated, (error) => console.error(error));
+					pc.createOffer(localDescCreated, (error: unknown) => console.error(error));
 				};
 				dataChannel = pc.createDataChannel("chat");
 				setupDataChannel();
 			} else {
 				// If user is not the offerer let wait for a data channel
+        // @ts-ignore
 				pc.ondatachannel = (event) => {
 					dataChannel = event.channel;
 					setupDataChannel();
@@ -106,6 +110,7 @@ const WebRTC = () => {
 
 		function startListentingToSignals() {
 			// Listen to signaling data from Scaledrone
+      // @ts-ignore
 			room.on("data", (message, client) => {
 				// Message was sent by us
 				if (client.id === drone.clientId) {
@@ -123,12 +128,12 @@ const WebRTC = () => {
 							// When receiving an offer lets answer it
 							if (pc.remoteDescription.type === "offer") {
 								console.log("Answering offer");
-								pc.createAnswer(localDescCreated, (error) =>
+								pc.createAnswer(localDescCreated, (error: unknown) =>
 									console.error(error),
 								);
 							}
 						},
-						(error) => console.error(error),
+						(error: unknown) => console.error(error),
 					);
 				} else if (message.candidate) {
 					// Add the new ICE candidate to our connections remote description
@@ -137,11 +142,11 @@ const WebRTC = () => {
 			});
 		}
 
-		function localDescCreated(desc) {
+		function localDescCreated(desc: unknown) {
 			pc.setLocalDescription(
 				desc,
 				() => sendSignalingMessage({ sdp: pc.localDescription }),
-				(error) => console.error(error),
+				(error: unknown) => console.error(error),
 			);
 		}
 
@@ -150,6 +155,7 @@ const WebRTC = () => {
 			checkDataChannelState();
 			dataChannel.onopen = checkDataChannelState;
 			dataChannel.onclose = checkDataChannelState;
+      // @ts-ignore
 			dataChannel.onmessage = (event) => {
 				console.log("WebRTC data channel message:", event.data);
 				setMessages([JSON.parse(event.data), ...messages]);
