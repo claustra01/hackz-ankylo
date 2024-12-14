@@ -13,7 +13,6 @@ const Map = () => {
             inclination={0}
             azimuth={0.25}
         />
-        <Target />
       </>
     );
 };
