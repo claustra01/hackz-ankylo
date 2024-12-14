@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { RTCConfig } from "../utils/const";
-import { RTCMessage } from "../models/schema";
 
 // scaledrone client
 // biome-ignore lint: should be global
@@ -23,7 +22,7 @@ const WebRTC = () => {
 
 	// get name from prompt
 	useEffect(() => {
-		setName(prompt("enter your name:") || "")
+		setName(prompt("enter your name:") || "");
 	}, []);
 
 	// connect to signaling server
@@ -181,7 +180,7 @@ const WebRTC = () => {
 		const message = JSON.stringify({
 			user: name,
 			message: text,
-		})
+		});
 		setMessages((prev) => [message, ...prev]);
 		dataChannel.send(message);
 		setText("");
