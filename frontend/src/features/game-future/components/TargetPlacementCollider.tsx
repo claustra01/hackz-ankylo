@@ -1,17 +1,17 @@
 import { Sphere } from "@react-three/drei";
 
-interface TargetPuttingColliderProps {
+interface TargetPlacementColliderProps {
 	center: [number, number, number];
 	radius: number;
 }
 
-const TargetPuttingCollider = ({
+const TargetPlacementCollider = ({
 	center,
 	radius,
-}: TargetPuttingColliderProps) => {
+}: TargetPlacementColliderProps) => {
 	return (
 		<Sphere
-			name="TargetPuttingCollider"
+			name="TargetPlacementCollider"
 			args={[radius]}
 			position={center}
 			visible={false}
@@ -19,4 +19,4 @@ const TargetPuttingCollider = ({
 	);
 };
 
-export default TargetPuttingCollider;
+export default TargetPlacementCollider;
