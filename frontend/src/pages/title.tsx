@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { generateHash } from "../utils/functions";
 
 const TitleStyle = {
 	fontSize: "6rem",
@@ -38,21 +39,21 @@ const Title = () => {
 		setRoomPassword(e.target.value);
 	};
 
-	const handleRedirectToVR = () => {
+	const handleRedirectToVR = async () => {
 		if (roomPassword === "") {
 			alert("あいことばを入力してください");
 			return;
 		}
-		const hash = roomPassword;
+		const hash = (await generateHash(roomPassword)).substring(0, 6);
 		navigate(`/vr#${hash}`);
 	};
 
-	const handleRedirectToPC = () => {
+	const handleRedirectToPC = async () => {
 		if (roomPassword === "") {
 			alert("あいことばを入力してください");
 			return;
 		}
-		const hash = roomPassword;
+		const hash = (await generateHash(roomPassword)).substring(0, 6);
 		navigate(`/vr#${hash}`);
 	};
 
