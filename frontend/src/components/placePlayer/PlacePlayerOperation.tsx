@@ -1,10 +1,10 @@
 import { useThree } from "@react-three/fiber";
 import { useEffect, useState } from "react";
 import * as THREE from "three";
-import type TargetInfo from "../models/TargetInfo";
-import { computePlacementPosition } from "../utils/targetPlacement";
+import type TargetInfo from "../../models/TargetInfo";
+import { computePlacementPosition } from "../../utils/targetPlacement";
+import Target from "../Target";
 import PlacePlayer from "./PlacePlayer";
-import Target from "./Target";
 import TargetPlacementCollider from "./TargetPlacementCollider";
 
 const PlacePlayerOperation = () => {
