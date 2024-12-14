@@ -8,6 +8,7 @@ export type Path =
   | `/hoge`
   | `/pc`
   | `/vr`
+  | `/title`
   | `/webrtc`
 
 export type Params = {
