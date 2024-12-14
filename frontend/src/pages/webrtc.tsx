@@ -41,7 +41,7 @@ const WebRTC = () => {
 		}
 		const chatHash = location.hash.substring(1);
 		const roomName = `observable-${chatHash}`;
-    // @ts-ignore
+		// @ts-ignore
 		drone = new window.Scaledrone("yiS12Ts5RdNhebyM");
 
 		drone.on("open", (error: unknown) => {
@@ -57,7 +57,7 @@ const WebRTC = () => {
 			});
 			// We're connected to the room and received an array of 'members'
 			// connected to the room (including us). Signaling server is ready.
-      // @ts-ignore
+			// @ts-ignore
 			room.on("members", (members) => {
 				if (members.length >= 3) {
 					return alert("The room is full");
@@ -82,7 +82,7 @@ const WebRTC = () => {
 
 			// 'onicecandidate' notifies us whenever an ICE agent needs to deliver a
 			// message to the other peer through the signaling server
-      // @ts-ignore
+			// @ts-ignore
 			pc.onicecandidate = (event) => {
 				if (event.candidate) {
 					sendSignalingMessage({ candidate: event.candidate });
@@ -92,13 +92,15 @@ const WebRTC = () => {
 			if (isOfferer) {
 				// If user is offerer let them create a negotiation offer and set up the data channel
 				pc.onnegotiationneeded = () => {
-					pc.createOffer(localDescCreated, (error: unknown) => console.error(error));
+					pc.createOffer(localDescCreated, (error: unknown) =>
+						console.error(error),
+					);
 				};
 				dataChannel = pc.createDataChannel("chat");
 				setupDataChannel();
 			} else {
 				// If user is not the offerer let wait for a data channel
-        // @ts-ignore
+				// @ts-ignore
 				pc.ondatachannel = (event) => {
 					dataChannel = event.channel;
 					setupDataChannel();
@@ -110,7 +112,7 @@ const WebRTC = () => {
 
 		function startListentingToSignals() {
 			// Listen to signaling data from Scaledrone
-      // @ts-ignore
+			// @ts-ignore
 			room.on("data", (message, client) => {
 				// Message was sent by us
 				if (client.id === drone.clientId) {
@@ -155,7 +157,7 @@ const WebRTC = () => {
 			checkDataChannelState();
 			dataChannel.onopen = checkDataChannelState;
 			dataChannel.onclose = checkDataChannelState;
-      // @ts-ignore
+			// @ts-ignore
 			dataChannel.onmessage = (event) => {
 				console.log("WebRTC data channel message:", event.data);
 				setMessages([JSON.parse(event.data), ...messages]);
