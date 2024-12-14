@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Helmet } from "react-helmet";
+import { SignalingServer } from "../components/webrtc/SignalingServer";
 import { useRTC } from "../hook/useRTC";
 
 const WebRTC = () => {
@@ -45,12 +45,7 @@ const WebRTC = () => {
 
 	return (
 		<>
-			<Helmet>
-				<script
-					type="text/javascript"
-					src="https://cdn.scaledrone.com/scaledrone.min.js"
-				/>
-			</Helmet>
+			<SignalingServer />
 			<div>
 				<h1>WebRTC Chat</h1>
 				<button type="button" onClick={handleInputName}>
