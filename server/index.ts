@@ -6,7 +6,7 @@ const app = http.createServer().listen(8000)
 console.log('listen 8000...')
 
 const io = socketIO.listen(app, {
-  origins: 'http://localhost:8080',
+  origins: process.env.CLIENT_URL || 'http://localhost:5173',
 })
 io.sockets.on('connection', socket => {
   // convenience function to log server messages on the client
