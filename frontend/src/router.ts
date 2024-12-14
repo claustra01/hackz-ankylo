@@ -6,6 +6,8 @@ import { components, hooks, utils } from '@generouted/react-router/client'
 export type Path =
   | `/`
   | `/hoge`
+  | `/pc`
+  | `/vr`
   | `/webrtc`
 
 export type Params = {
