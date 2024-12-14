@@ -9,7 +9,7 @@ import {
 import { useRef, useState } from "react";
 import { type Mesh, Vector3 } from "three";
 import type { Group } from "three";
-import { useThrowArrow } from "../hooks/useThrowArrow";
+import { throwArrow } from "../utils/throwArrow";
 const store = createXRStore();
 
 interface VRPlayerProps {
@@ -48,7 +48,7 @@ export const VRPlayer = ({ arrowRigidBody }: VRPlayerProps) => {
 				setRightGrab(true);
 			} else {
 				if (rightGrab && leftMeshRef.current) {
-					throwArrow();
+					setupArrow();
 					setRightGrab(false);
 				}
 			}
@@ -56,7 +56,7 @@ export const VRPlayer = ({ arrowRigidBody }: VRPlayerProps) => {
 		return <XROrigin ref={ref} />;
 	};
 
-	const throwArrow = () => {
+	const setupArrow = () => {
 		const leftController = useXRInputSourceState("controller", "left");
 		if (!leftController) return;
 		const leftControllerPos = new Vector3();
@@ -64,7 +64,7 @@ export const VRPlayer = ({ arrowRigidBody }: VRPlayerProps) => {
 		const rightControllerPos = new Vector3();
 		rightMeshRef.current?.getWorldPosition(rightControllerPos);
 		const rotateVector3 = rightControllerPos.sub(leftControllerPos);
-		useThrowArrow(leftControllerPos, rotateVector3, arrowRigidBody);
+		throwArrow(leftControllerPos, rotateVector3, arrowRigidBody);
 	};
 
 	return (
