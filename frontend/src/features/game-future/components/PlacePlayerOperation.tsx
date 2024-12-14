@@ -8,64 +8,66 @@ import Target from "./Target";
 import TargetPlacementCollider from "./TargetPlacementCollider";
 
 const PlacePlayerOperation = () => {
-	const [targetInfos, setTargetInfos] = useState<TargetInfo[]>([]);
-	const { camera, scene } = useThree();
+  const [arrowNum, setArrowNum] = useState(0);
+  const [targetNum, setTargetNum] = useState(0);
+  const [targetInfos, setTargetInfos] = useState<TargetInfo[]>([]);
+  const { camera, scene } = useThree();
 
-	useEffect(() => {
-		const handleClick = (event: MouseEvent) => {
-			const mappedMousePosition = new THREE.Vector2();
-			mappedMousePosition.x = (event.clientX / window.innerWidth) * 2 - 1;
-			mappedMousePosition.y = -((event.clientY / window.innerHeight) * 2 - 1);
+  useEffect(() => {
+    const handleClick = (event: MouseEvent) => {
+      const mappedMousePosition = new THREE.Vector2();
+      mappedMousePosition.x = (event.clientX / window.innerWidth) * 2 - 1;
+      mappedMousePosition.y = -((event.clientY / window.innerHeight) * 2 - 1);
 
-			const placementPosition = computePlacementPosition(
-				camera,
-				mappedMousePosition,
-				scene,
-			);
-			if (!placementPosition) {
-				return;
-			}
+      const placementPosition = computePlacementPosition(
+        camera,
+        mappedMousePosition,
+        scene
+      );
+      if (!placementPosition) {
+        return;
+      }
 
-			const newTargetInfo: TargetInfo = {
-				id: targetInfos.length,
-				position: placementPosition,
-				facingDirection: new THREE.Vector3(0, 0, 0),
-			};
+      const newTargetInfo: TargetInfo = {
+        id: targetInfos.length,
+        position: placementPosition,
+        facingDirection: new THREE.Vector3(0, 0, 0),
+      };
 
-			setTargetInfos((prevTargetInfos: TargetInfo[]) => [
-				...prevTargetInfos,
-				newTargetInfo,
-			]);
-		};
+      setTargetInfos((prevTargetInfos: TargetInfo[]) => [
+        ...prevTargetInfos,
+        newTargetInfo,
+      ]);
+    };
 
-		// マウス移動イベントを監視
-		window.addEventListener("click", handleClick);
+    // マウス移動イベントを監視
+    window.addEventListener("click", handleClick);
 
-		// クリーンアップ処理
-		return () => {
-			window.removeEventListener("click", handleClick);
-		};
-	}, [scene, camera, targetInfos]);
+    // クリーンアップ処理
+    return () => {
+      window.removeEventListener("click", handleClick);
+    };
+  }, [scene, camera, targetInfos]);
 
-	const handleShoot = (id: number) => {
-		setTargetInfos((prevTargetInfos: TargetInfo[]) =>
-			prevTargetInfos.filter((targetInfo) => targetInfo.id !== id),
-		);
-	};
+  const handleShoot = (id: number) => {
+    setTargetInfos((prevTargetInfos: TargetInfo[]) =>
+      prevTargetInfos.filter((targetInfo) => targetInfo.id !== id)
+    );
+  };
 
-	return (
-		<>
-			<PlacePlayer />
-			<TargetPlacementCollider center={[0, 0, 0]} radius={10} />
-			{targetInfos.map((targetInfo) => (
-				<Target
-					key={targetInfo.id}
-					targetInfo={targetInfo}
-					onShoot={handleShoot}
-				/>
-			))}
-		</>
-	);
+  return (
+    <>
+      <PlacePlayer />
+      <TargetPlacementCollider center={[0, 0, 0]} radius={10} />
+      {targetInfos.map((targetInfo) => (
+        <Target
+          key={targetInfo.id}
+          targetInfo={targetInfo}
+          onShoot={handleShoot}
+        />
+      ))}
+    </>
+  );
 };
 
 export default PlacePlayerOperation;
