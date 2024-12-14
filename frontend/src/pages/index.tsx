@@ -1,7 +1,9 @@
 import { OrbitControls } from "@react-three/drei";
+import { Sphere } from "@react-three/drei";
 import { Canvas, useThree } from "@react-three/fiber";
 import { useState } from "react";
 import GameMap from "../features/game-future/components/GameMap";
+import TargetPuttingCollider from "../features/game-future/components/TargetPuttingCollider";
 import useTargetPutting from "../features/game-future/hooks/useTargetPutting";
 import type TargetInfo from "../features/game-future/utils/TargetInfo";
 
@@ -30,6 +32,10 @@ function App() {
 			/>
 			<GameMap targetInfos={targetInfos} />
 			<OrbitControls />
+			<Sphere position={[0, 0, 0]} scale={0.1}>
+				<meshStandardMaterial color="blue" />
+			</Sphere>
+			<TargetPuttingCollider center={[0, 0, 0]} radius={10} />
 		</Canvas>
 	);
 }

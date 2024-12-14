@@ -18,8 +18,8 @@ const GameMap = ({ targetInfos }: GameMapProps) => {
 				inclination={0}
 				azimuth={0.25}
 			/>
-			{targetInfos.map((targetInfo, i) => (
-				<Target key={i} targetInfo={targetInfo} />
+			{targetInfos.map((targetInfo) => (
+				<Target key={targetInfo.id} targetInfo={targetInfo} />
 			))}
 		</>
 	);

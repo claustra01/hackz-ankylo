@@ -6,15 +6,15 @@ interface TargetProps {
 }
 
 const Target = ({ targetInfo }: TargetProps) => {
-	const baseRotation = new THREE.Euler(Math.PI / 2, 0, 0);
-	//TODO: Apply facingDirection to baseRotation
-
 	return (
 		<Cylinder
+			onUpdate={(self) => {
+				self.lookAt(new THREE.Vector3(0, 0, 0));
+				self.rotateX(Math.PI / 2);
+			}}
 			args={[1, 1, 1, 32]}
 			position={targetInfo.position}
 			scale={[1, 0.3, 1]}
-			rotation={baseRotation}
 		>
 			<meshStandardMaterial color="red" />
 		</Cylinder>
