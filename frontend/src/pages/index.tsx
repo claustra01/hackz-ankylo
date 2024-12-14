@@ -39,21 +39,21 @@ const Title = () => {
 		setRoomPassword(e.target.value);
 	};
 
-	const handleRedirectToVR = async () => {
+	const handleRedirectToVR = () => {
 		if (roomPassword === "") {
 			alert("あいことばを入力してください");
 			return;
 		}
-		const hash = (await generateHash(roomPassword)).substring(0, 6);
+		const hash = generateHash(roomPassword).substring(0, 6);
 		navigate(`/vr#${hash}`);
 	};
 
-	const handleRedirectToPC = async () => {
+	const handleRedirectToPC = () => {
 		if (roomPassword === "") {
 			alert("あいことばを入力してください");
 			return;
 		}
-		const hash = (await generateHash(roomPassword)).substring(0, 6);
+		const hash = generateHash(roomPassword).substring(0, 6);
 		navigate(`/pc#${hash}`);
 	};
 
