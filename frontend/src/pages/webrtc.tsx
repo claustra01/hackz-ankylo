@@ -35,7 +35,11 @@ const WebRTC = () => {
 			user: name,
 			message: text,
 		});
-		send(message);
+		if (isConnected) {
+			send(message);
+		} else {
+			alert("You are not connected");
+		}
 		setText("");
 	};
 
