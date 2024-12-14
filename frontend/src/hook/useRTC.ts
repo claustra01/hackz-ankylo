@@ -1,6 +1,6 @@
 // scaledrone client
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { RTCConfig } from "../utils/const";
 
 // biome-ignore lint: should be global
@@ -19,7 +19,7 @@ export const useRTC = () => {
 	const [isConnected, setIsConnected] = useState<boolean>(false);
 	const [messages, setMessages] = useState<string[]>([]);
 
-	const connect = (roomHash: string) => {
+	const connect = useCallback((roomHash: string) => {
 		const roomName = `observable-${roomHash}`;
 
 		// signaling server (scaledrone)
@@ -152,7 +152,7 @@ export const useRTC = () => {
 				setMessages(["WebRTC data channel is now open"]);
 			}
 		}
-	};
+	}, []);
 
 	const send = (message: string) => {
 		setMessages((prev) => [message, ...prev]);
