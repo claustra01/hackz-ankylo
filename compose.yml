@@ -10,3 +10,8 @@ services:
       - CLIENT_URL=${CLIENT_URL}
     ports:
       - "18000:8000"
+
+  sandbox:
+    build: ./sandbox
+    ports:
+      - "14000:80"
