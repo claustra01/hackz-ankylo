@@ -4,7 +4,7 @@ import Ground from "./Ground";
 import Target from "./Target";
 
 interface GameMapProps {
-	targetInfos: TargetInfo[];
+	targetInfos: (TargetInfo & { banishThis: () => void })[];
 }
 
 const GameMap = ({ targetInfos }: GameMapProps) => {
@@ -19,7 +19,11 @@ const GameMap = ({ targetInfos }: GameMapProps) => {
 				azimuth={0.25}
 			/>
 			{targetInfos.map((targetInfo) => (
-				<Target key={targetInfo.id} targetInfo={targetInfo} />
+				<Target
+					key={targetInfo.id}
+					targetInfo={targetInfo}
+					banishThis={targetInfo.banishThis}
+				/>
 			))}
 		</>
 	);

@@ -3,3 +3,8 @@ services:
     build: ./frontend
     ports:
       - "13000:80"
+
+  sandbox:
+    build: ./sandbox
+    ports:
+      - "14000:80"

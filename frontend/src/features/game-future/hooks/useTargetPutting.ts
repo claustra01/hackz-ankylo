@@ -18,8 +18,8 @@ const getTargetPuttingCollider = (intersects: THREE.Intersection[]) => {
 const useTargetPutting = (
 	camera: THREE.Camera,
 	scene: THREE.Scene,
-	targetInfos: TargetInfo[],
-	setTargetInfos: (targetInfos: TargetInfo[]) => void,
+	targetInfos: (TargetInfo & { banishThis: () => void })[],
+	addTargetInfo: (targetInfo: TargetInfo) => void,
 ) => {
 	const mousePosition = new THREE.Vector2();
 	window.addEventListener("click", (event) => {
@@ -38,7 +38,7 @@ const useTargetPutting = (
 				facingDirection: new THREE.Vector3(0, 0, 0),
 			};
 
-			setTargetInfos([...targetInfos, targetInfo]);
+			addTargetInfo(targetInfo);
 		}
 	});
 };
