@@ -1,7 +1,13 @@
 import { Sky } from "@react-three/drei";
+import type TargetInfo from "../utils/TargetInfo";
 import Ground from "./Ground";
+import Target from "./Target";
 
-const GameMap = () => {
+interface GameMapProps {
+	targetInfos: TargetInfo[];
+}
+
+const GameMap = ({ targetInfos }: GameMapProps) => {
 	return (
 		<>
 			<directionalLight position={[0, 1, 1]} intensity={5} />
@@ -12,6 +18,9 @@ const GameMap = () => {
 				inclination={0}
 				azimuth={0.25}
 			/>
+			{targetInfos.map((targetInfo, i) => (
+				<Target key={i} targetInfo={targetInfo} />
+			))}
 		</>
 	);
 };
