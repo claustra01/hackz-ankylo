@@ -6,12 +6,22 @@ import { computePlacementPosition } from "../../utils/targetPlacement";
 import Target from "../Target";
 import PlacePlayer from "./PlacePlayer";
 import TargetPlacementCollider from "./TargetPlacementCollider";
+import { useRTC } from "../../hook/useRTC";
 
-const PlacePlayerOperation = () => {
+interface PlacePlayerOperationProps {
+	roomHash: string;
+}
+
+const PlacePlayerOperation = ({ roomHash }: PlacePlayerOperationProps) => {
 	const [targetInfos, setTargetInfos] = useState<TargetInfo[]>([]);
 	const { camera, scene } = useThree();
 
+	const { connect, send } = useRTC();
+
 	useEffect(() => {
+
+		connect(roomHash);
+
 		const handleClick = (event: MouseEvent) => {
 			const mappedMousePosition = new THREE.Vector2();
 			mappedMousePosition.x = (event.clientX / window.innerWidth) * 2 - 1;
@@ -51,6 +61,14 @@ const PlacePlayerOperation = () => {
 		setTargetInfos((prevTargetInfos: TargetInfo[]) =>
 			prevTargetInfos.filter((targetInfo) => targetInfo.id !== id),
 		);
+
+		const shootedTarget = targetInfos.filter((targetInfo) => targetInfo.id === id)[0];
+
+		send(JSON.stringify({
+			type: "shoot-arrow",
+			pos: shootedTarget.position,
+			dir: shootedTarget.facingDirection,
+		}));
 	};
 
 	return (

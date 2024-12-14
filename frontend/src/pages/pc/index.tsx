@@ -14,7 +14,7 @@ function App() {
 					timeSpan={1000}
 					position={new THREE.Vector3(0, 10, 0)}
 				/>
-				<PlacePlayerOperation />
+				<PlacePlayerOperation roomHash={window.location.href.split("#")[1]} />
 			</Physics>
 		</Canvas>
 	);
