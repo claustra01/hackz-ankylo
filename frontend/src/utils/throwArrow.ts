@@ -1,6 +1,6 @@
 import type { Vector3 } from "@react-three/fiber";
 
-export const useThrowArrow = (
+export const throwArrow = (
 	startVector: Vector3,
 	rotateVector3: Vector3,
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
