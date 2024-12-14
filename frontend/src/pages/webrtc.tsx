@@ -16,14 +16,10 @@ let pc: any;
 let dataChannel: any;
 
 const WebRTC = () => {
-	const [name, setName] = useState<string>("");
 	const [messages, setMessages] = useState<string[]>([]);
+	const [name, setName] = useState<string>("");
 	const [text, setText] = useState<string>("");
-
-	// get name from prompt
-	useEffect(() => {
-		setName(prompt("enter your name:") || "");
-	}, []);
+	const [isConnected, setIsConnected] = useState<boolean>(false);
 
 	// connect to signaling server
 	useEffect(() => {
@@ -31,6 +27,11 @@ const WebRTC = () => {
 			handleConnect();
 		}
 	}, [name]);
+
+	// get name from prompt
+	const handleInputName = () => {
+		setName(prompt("enter your name:") || "");
+	};
 
 	const handleInputText = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setText(event.target.value);
@@ -170,6 +171,7 @@ const WebRTC = () => {
 		function checkDataChannelState() {
 			console.log("WebRTC channel state is:", dataChannel.readyState);
 			if (dataChannel.readyState === "open") {
+				setIsConnected(true);
 				setMessages(["WebRTC data channel is now open"]);
 			}
 		}
@@ -195,6 +197,11 @@ const WebRTC = () => {
 				/>
 			</Helmet>
 			<div>
+				<h1>WebRTC Chat</h1>
+				<button type="button" onClick={handleInputName}>
+					Connect
+				</button>
+				<p>isConnected: {isConnected ? "true" : "false"}</p>
 				<input type="text" value={text} onChange={handleInputText} />
 				<button type="button" onClick={handleSendText}>
 					Send
