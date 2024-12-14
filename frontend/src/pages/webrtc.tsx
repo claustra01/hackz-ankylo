@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Helmet } from "react-helmet";
+import { RTCConfig } from "../utils/const";
 
 // scaledrone client
 // biome-ignore lint: should be global
@@ -18,14 +19,6 @@ const WebRTC = () => {
 	const [name, setName] = useState<string>("");
 	const [messages, setMessages] = useState<string[]>([]);
 	const [text, setText] = useState<string>("");
-
-	const configuration = {
-		iceServers: [
-			{
-				urls: ["stun:stun.l.google.com:19302"],
-			},
-		],
-	};
 
 	const handleInputName = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setName(event.target.value);
@@ -78,7 +71,7 @@ const WebRTC = () => {
 
 		function startWebRTC(isOfferer: boolean) {
 			console.log("Starting WebRTC in as", isOfferer ? "offerer" : "waiter");
-			pc = new RTCPeerConnection(configuration);
+			pc = new RTCPeerConnection(RTCConfig);
 
 			// 'onicecandidate' notifies us whenever an ICE agent needs to deliver a
 			// message to the other peer through the signaling server
