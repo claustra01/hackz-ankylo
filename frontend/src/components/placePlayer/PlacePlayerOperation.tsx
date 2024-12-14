@@ -16,10 +16,18 @@ const PlacePlayerOperation = ({ roomHash }: PlacePlayerOperationProps) => {
 	const [targetInfos, setTargetInfos] = useState<TargetInfo[]>([]);
 	const { camera, scene } = useThree();
 
-	const { connect, send } = useRTC();
+	const { connect, send, messages } = useRTC();
+
+	useEffect(() => {
+		const message =JSON.parse(messages[messages.length - 1]);
+		if(message.type === "shoot-arrow") {
+			console.log("shoot-arrow", message);
+		}
+	}, [messages]);
 
 	useEffect(() => {
 
+		console.log("connect", roomHash);
 		connect(roomHash);
 
 		const handleClick = (event: MouseEvent) => {
@@ -55,7 +63,7 @@ const PlacePlayerOperation = ({ roomHash }: PlacePlayerOperationProps) => {
 		return () => {
 			window.removeEventListener("click", handleClick);
 		};
-	}, [scene, camera, targetInfos]);
+	}, [scene, camera, targetInfos, connect, roomHash]);
 
 	const handleShoot = (id: number) => {
 		setTargetInfos((prevTargetInfos: TargetInfo[]) =>
@@ -63,7 +71,6 @@ const PlacePlayerOperation = ({ roomHash }: PlacePlayerOperationProps) => {
 		);
 
 		const shootedTarget = targetInfos.filter((targetInfo) => targetInfo.id === id)[0];
-
 		send(JSON.stringify({
 			type: "shoot-arrow",
 			pos: shootedTarget.position,
