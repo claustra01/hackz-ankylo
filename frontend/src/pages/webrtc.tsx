@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { RTCConfig } from "../utils/const";
+import { RTCMessage } from "../models/schema";
 
 // scaledrone client
 // biome-ignore lint: should be global
@@ -20,9 +21,17 @@ const WebRTC = () => {
 	const [messages, setMessages] = useState<string[]>([]);
 	const [text, setText] = useState<string>("");
 
-	const handleInputName = (event: React.ChangeEvent<HTMLInputElement>) => {
-		setName(event.target.value);
-	};
+	// get name from prompt
+	useEffect(() => {
+		setName(prompt("enter your name:") || "")
+	}, []);
+
+	// connect to signaling server
+	useEffect(() => {
+		if (name) {
+			handleConnect();
+		}
+	}, [name]);
 
 	const handleInputText = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setText(event.target.value);
@@ -152,8 +161,9 @@ const WebRTC = () => {
 			dataChannel.onclose = checkDataChannelState;
 			// @ts-ignore
 			dataChannel.onmessage = (event) => {
+				// receive message
 				console.log("WebRTC data channel message:", event.data);
-				setMessages([JSON.parse(event.data), ...messages]);
+				setMessages((prev) => [event.data, ...prev]);
 			};
 		}
 
@@ -161,15 +171,19 @@ const WebRTC = () => {
 		function checkDataChannelState() {
 			console.log("WebRTC channel state is:", dataChannel.readyState);
 			if (dataChannel.readyState === "open") {
-				setMessages(["WebRTC data channel is now open", ...messages]);
+				setMessages(["WebRTC data channel is now open"]);
 			}
 		}
 	};
 
 	const handleSendText = () => {
 		if (text === "") return;
-		console.log(dataChannel.readyState);
-		dataChannel.send(JSON.stringify(text));
+		const message = JSON.stringify({
+			user: name,
+			message: text,
+		})
+		setMessages((prev) => [message, ...prev]);
+		dataChannel.send(message);
 		setText("");
 	};
 
@@ -182,19 +196,15 @@ const WebRTC = () => {
 				/>
 			</Helmet>
 			<div>
-				<input type="text" value={name} onChange={handleInputName} />
-				<button type="button" onClick={handleConnect}>
-					Connect
+				<input type="text" value={text} onChange={handleInputText} />
+				<button type="button" onClick={handleSendText}>
+					Send
 				</button>
 				<div>
 					{messages.map((message, _) => (
 						<div key={message}>{message}</div>
 					))}
 				</div>
-				<input type="text" value={text} onChange={handleInputText} />
-				<button type="button" onClick={handleSendText}>
-					Send
-				</button>
 			</div>
 		</>
 	);
