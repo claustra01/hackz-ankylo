@@ -1,0 +1,33 @@
+name: deploy 
+on: 
+  pull_request: 
+    branches: 
+      - main
+    types: 
+      - closed
+
+jobs: 
+  deploy-client: 
+    runs-on: ubuntu-latest 
+    steps: 
+      - name: Checkout 
+        uses: actions/checkout@v4
+
+      - name: Node setup 
+        uses: actions/setup-node@v4 
+        with: 
+          node-version: '22'
+
+      - name: Deploy
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          key: ${{ secrets.SSH_KEY }}
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            echo "Login successfull"
+            cd hackz-ankylo
+            git pull
+            docker compose up -d --build
+            echo "Deploy successful"
