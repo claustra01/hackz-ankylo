@@ -4,13 +4,6 @@ services:
     ports:
       - "13000:80"
 
-  signaling-server:
-    build: ./server
-    environment:
-      - CLIENT_URL=${CLIENT_URL}
-    ports:
-      - "18000:8000"
-
   sandbox:
     build: ./sandbox
     ports:
