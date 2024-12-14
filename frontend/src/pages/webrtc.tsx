@@ -1,12 +1,13 @@
-import { FC, useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import io from 'socket.io-client'
 
 /**
  * communicate to a signaling server
  */
-const Sample4: FC = () => {
+const ServerTest = () => {
+  const url = import.meta.env.VITE_SIGNALING_SERVER_URL || 'http://localhost:8000'
   const socketRef = useRef<SocketIOClient.Socket>(
-    io.connect('http://localhost:18000'),
+    io.connect(url),
   )
   useEffect(() => {
     const room = prompt('Enter room name:')
@@ -45,4 +46,4 @@ const Sample4: FC = () => {
   )
 }
 
-export default Sample4
+export default ServerTest
