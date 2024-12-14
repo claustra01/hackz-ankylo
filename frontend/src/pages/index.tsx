@@ -1,14 +1,14 @@
-import Map from '../features/game-future/components/Map'
-import { Canvas } from '@react-three/fiber'
-import { OrbitControls } from '@react-three/drei'
+import { OrbitControls } from "@react-three/drei";
+import { Canvas } from "@react-three/fiber";
+import GameMap from "../features/game-future/components/GameMap";
 
 function App() {
-  return (
-    <Canvas style={{ width: '100vw', height: '100vh' }}>
-      <Map />
-      <OrbitControls />
-    </Canvas>
-  )
+	return (
+		<Canvas style={{ width: "100vw", height: "100vh" }}>
+			<GameMap />
+			<OrbitControls />
+		</Canvas>
+	);
 }
 
-export default App
+export default App;
