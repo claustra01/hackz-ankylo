@@ -38,7 +38,7 @@ export const useRTC = () => {
 				if (error) {
 					setError("Failed to connect to signaling server");
 					console.error(error);
-					return 
+					return;
 				}
 				console.log("Connected to signaling server");
 			});
@@ -122,14 +122,14 @@ export const useRTC = () => {
 									setError("Failed to create answer");
 									console.error(error);
 									return;
-							});
+								});
 							}
 						},
 						(error: unknown) => {
 							setError("Failed to set remote description");
 							console.error(error);
 							return;
-						}
+						},
 					);
 				} else if (message.candidate) {
 					// add the new ICE candidate to our connections remote description
@@ -146,8 +146,8 @@ export const useRTC = () => {
 				(error: unknown) => {
 					setError("Failed to set local description");
 					console.error(error);
-					return
-				}
+					return;
+				},
 			);
 		}
 
@@ -169,7 +169,11 @@ export const useRTC = () => {
 			console.log("WebRTC channel state is:", dataChannel.readyState);
 			if (dataChannel.readyState === "open") {
 				setIsConnected(true);
-				setMessages(["WebRTC data channel is now open"]);
+				const msg = JSON.stringify({
+					type: "system",
+					message: "WebRTC data channel is now open",
+				});
+				setMessages([msg]);
 			}
 		}
 	}, []);
