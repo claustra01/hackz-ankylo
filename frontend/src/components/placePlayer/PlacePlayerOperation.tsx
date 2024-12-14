@@ -21,13 +21,14 @@ const PlacePlayerOperation = () => {
 
   // connect to signaling server
   useEffect(() => {
-    if (isReady) return;
-    // generate room id with fragment hash
-    if (!location.hash) {
-      location.hash = Math.floor(Math.random() * 0xffffff).toString(16);
+    if (isReady) {
+      // generate room id with fragment hash
+      if (!location.hash) {
+        location.hash = Math.floor(Math.random() * 0xffffff).toString(16);
+      }
+      const roomHash = location.hash.substring(1);
+      connect(roomHash);
     }
-    const roomHash = location.hash.substring(1);
-    connect(roomHash);
   }, [connect, isReady]);
 
   useEffect(() => {
