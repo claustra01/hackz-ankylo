@@ -1,23 +1,22 @@
-import { Plane } from "@react-three/drei";
+import { RigidBody } from "@react-three/rapier";
 
 interface GroundProps {
-	position: [number, number, number];
-	scale: {
-		x: number;
-		z: number;
-	};
+  position: [number, number, number];
+  scale: {
+    x: number;
+    z: number;
+  };
 }
 
 const Ground = ({ position, scale }: GroundProps) => {
-	return (
-		<Plane
-			args={[1 * scale.x, 1 * scale.z, 128, 128]}
-			position={position}
-			rotation={[-Math.PI / 2, 0, 0]}
-		>
-			<meshStandardMaterial color="green" />
-		</Plane>
-	);
+  return (
+    <RigidBody type="fixed">
+      <mesh position={position} scale={[scale.x, 1, scale.z]}>
+        <boxGeometry />
+        <meshStandardMaterial color="green" metalness={0} roughness={1} />
+      </mesh>
+    </RigidBody>
+  );
 };
 
 export default Ground;

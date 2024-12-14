@@ -1,9 +1,10 @@
 import { useFrame } from "@react-three/fiber";
-import { Physics, RigidBody } from "@react-three/rapier";
+import { RigidBody } from "@react-three/rapier";
 import {
   XR,
   XROrigin,
-  createXRStore,
+  type XRStore,
+  type XRControllerState,
   useXRInputSourceState,
 } from "@react-three/xr";
 import { useEffect, useRef, useState } from "react";
@@ -14,19 +15,20 @@ import type TargetInfo from "../models/TargetInfo";
 import type { SetTargetMessage } from "../models/schema";
 import { throwArrow } from "../utils/throwArrow";
 import Target from "./Target";
-const store = createXRStore();
+interface VRPlayerProps {
+  store: XRStore;
+}
 
-export const VRPlayer = () => {
-  const [arrowNum, setArrowNum] = useState(0);
+export const VRPlayer = ({ store }: VRPlayerProps) => {
   const [targetNum, setTargetNum] = useState(0);
   const [isReady, setIsReady] = useState(false);
   const [rightGrab, setRightGrab] = useState(false);
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  const [arrowRigit, setArrowRigit] = useState<any[]>([]);
   const [targetInfo, setTargetInfo] = useState<TargetInfo[]>([]);
   const { isConnected, messages, connect, send } = useRTC();
   const leftMeshRef = useRef<Mesh>(null);
   const rightMeshRef = useRef<Mesh>(null);
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  const arrowRigidRef = useRef<any>(null);
 
   // connect to signaling server
   useEffect(() => {
@@ -91,11 +93,7 @@ export const VRPlayer = () => {
         setRightGrab(true);
       } else {
         if (rightGrab && leftMeshRef.current) {
-          // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-          const arrowRef = useRef<any>(null);
-          setArrowRigit(() => [...arrowRigit, arrowRef]);
-          setupArrow();
-          setArrowNum((prev) => prev + 1);
+          setupArrow(leftController);
           setRightGrab(false);
         }
       }
@@ -103,15 +101,18 @@ export const VRPlayer = () => {
     return <XROrigin ref={ref} />;
   };
 
-  const setupArrow = () => {
-    const leftController = useXRInputSourceState("controller", "left");
+  const setupArrow = (leftController: XRControllerState) => {
     if (!leftController) return;
     const leftControllerPos = new Vector3();
     leftController.object?.getWorldPosition(leftControllerPos);
     const rightControllerPos = new Vector3();
     rightMeshRef.current?.getWorldPosition(rightControllerPos);
-    const rotateVector3 = rightControllerPos.sub(leftControllerPos);
-    throwArrow(leftControllerPos, rotateVector3, arrowRigit[arrowNum]);
+    const rotateVector3 = leftControllerPos.sub(rightControllerPos);
+    throwArrow(
+      leftControllerPos,
+      rotateVector3.multiplyScalar(5),
+      arrowRigidRef
+    );
     //ShootArrowMessageのjsonにする
     const message = JSON.stringify({
       type: "shoot-arrow",
@@ -134,42 +135,29 @@ export const VRPlayer = () => {
   return (
     <>
       <XR store={store}>
-        <Physics gravity={[0, -9.81, 0]}>
-          <mesh ref={leftMeshRef} scale={[0.01, 0.01, 0.01]}>
-            <boxGeometry />
-            <meshStandardMaterial
-              color="yellow"
-              metalness={0}
-              roughness={0.2}
-            />
-          </mesh>
+        <mesh ref={leftMeshRef} scale={[0.01, 0.01, 0.01]}>
+          <boxGeometry />
+          <meshStandardMaterial color="yellow" metalness={0} roughness={0.2} />
+        </mesh>
 
-          <mesh ref={rightMeshRef} scale={[0.01, 0.01, 0.01]}>
-            <boxGeometry />
+        <mesh ref={rightMeshRef} scale={[0.01, 0.01, 0.01]}>
+          <boxGeometry />
+          <meshStandardMaterial color="cyan" metalness={0} roughness={0.2} />
+        </mesh>
+        <RigidBody ref={arrowRigidRef}>
+          <mesh scale={[0.25, 0.25, 0.25]} position={[0, 0, 0]}>
+            <sphereGeometry />
             <meshStandardMaterial color="cyan" metalness={0} roughness={0.2} />
           </mesh>
-          {arrowRigit.map((arrowRigidBody, index) => (
-            // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-            <RigidBody key={index} ref={arrowRigidBody}>
-              <mesh scale={[0.25, 0.25, 0.25]} position={[0, -3, 0]}>
-                <sphereGeometry />
-                <meshStandardMaterial
-                  color="cyan"
-                  metalness={0}
-                  roughness={0.2}
-                />
-              </mesh>
-            </RigidBody>
-          ))}
-          {targetInfo.map((targetInfo) => (
-            <Target
-              key={targetInfo.id}
-              targetInfo={targetInfo}
-              onShoot={handleShoot}
-            />
-          ))}
-          <Locomotion />
-        </Physics>
+        </RigidBody>
+        {targetInfo.map((targetInfo) => (
+          <Target
+            key={targetInfo.id}
+            targetInfo={targetInfo}
+            onShoot={handleShoot}
+          />
+        ))}
+        <Locomotion />
       </XR>
     </>
   );

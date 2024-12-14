@@ -6,18 +6,18 @@ import type { ShootArrowMessage } from "../../models/schema";
 import { computePlacementPosition } from "../../utils/targetPlacement";
 import { throwArrow } from "../../utils/throwArrow";
 import Target from "../Target";
+import { RigidBody } from "@react-three/rapier";
 import { useRTC } from "./../../hook/useRTC";
 import PlacePlayer from "./PlacePlayer";
 import TargetPlacementCollider from "./TargetPlacementCollider";
 
 const PlacePlayerOperation = () => {
-  const [arrowNum, setArrowNum] = useState(0);
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  const [arrowRigit, setArrowRigit] = useState<any[]>([]);
   const [isReady, setIsReady] = useState(false);
   const [targetInfos, setTargetInfos] = useState<TargetInfo[]>([]);
   const { camera, scene } = useThree();
   const { isConnected, messages, connect, send } = useRTC();
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  const arrowRigitRef = useRef<any>(null);
 
   // connect to signaling server
   useEffect(() => {
@@ -33,9 +33,14 @@ const PlacePlayerOperation = () => {
 
   useEffect(() => {
     if (messages.length === 0) return;
-    const message = JSON.parse(messages[messages.length - 1]);
-    if (message.type === "shoot-arrow") {
-      console.log("shoot-arrow", message);
+    const message = messages[messages.length - 1];
+    //jsonからmessageを取り出す
+    const data = JSON.parse(message) as { type: string };
+    console.log(data.type);
+    if (data.type === "shoot-arrow") {
+      console.log("shoot-arrow");
+      const shootArrowMessage = JSON.parse(message) as ShootArrowMessage;
+      throwArrow(shootArrowMessage.pos, shootArrowMessage.dir, arrowRigitRef);
     }
   }, [messages]);
 
@@ -88,25 +93,6 @@ const PlacePlayerOperation = () => {
     };
   }, [scene, camera, targetInfos, isReady, isConnected, send]);
 
-  useEffect(() => {
-    if (messages.length === 0) return;
-    const message = messages[messages.length - 1];
-    //jsonからmessageを取り出す
-    const data = JSON.parse(message) as { type: string };
-    if (data.type === "shoot-arrow") {
-      const shootArrowMessage = JSON.parse(message) as ShootArrowMessage;
-      // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-      const arrowRef = useRef<any>(null);
-      setArrowRigit(() => [...arrowRigit, arrowRef]);
-      throwArrow(
-        shootArrowMessage.pos,
-        shootArrowMessage.dir,
-        arrowRigit[arrowNum]
-      );
-      setArrowNum((prev) => prev + 1);
-    }
-  }, [messages, arrowRigit, arrowNum]);
-
   const handleShoot = (id: number) => {
     setTargetInfos((prevTargetInfos: TargetInfo[]) =>
       prevTargetInfos.filter((targetInfo) => targetInfo.id !== id)
@@ -135,6 +121,12 @@ const PlacePlayerOperation = () => {
           onShoot={handleShoot}
         />
       ))}
+      <RigidBody ref={arrowRigitRef}>
+        <mesh scale={[0.25, 0.25, 0.25]} position={[0, 0, 0]}>
+          <sphereGeometry />
+          <meshStandardMaterial color="cyan" metalness={0} roughness={0.2} />
+        </mesh>
+      </RigidBody>
     </>
   );
 };
