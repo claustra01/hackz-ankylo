@@ -3,3 +3,8 @@ services:
     build: ./frontend
     ports:
       - "13000:80"
+
+  signaling-server:
+    build: ./server
+    ports:
+      - "18000:8000"
