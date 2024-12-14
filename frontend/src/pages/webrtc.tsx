@@ -6,7 +6,7 @@ const WebRTC = () => {
 	const [name, setName] = useState<string>("");
 	const [text, setText] = useState<string>("");
 
-	const { isConnected, messages, connect, send } = useRTC();
+	const { isConnected, error, messages, connect, send } = useRTC();
 
 	// connect to signaling server
 	useEffect(() => {
@@ -19,6 +19,12 @@ const WebRTC = () => {
 			connect(roomHash);
 		}
 	}, [name, connect]);
+
+	useEffect(() => {
+		if (error) {
+			alert(error);
+		}
+	}, [error]);
 
 	// get name from prompt
 	const handleInputName = () => {
