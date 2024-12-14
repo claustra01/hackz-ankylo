@@ -18,6 +18,7 @@ let dataChannel: any;
 
 export const useRTC = () => {
   const [isConnected, setIsConnected] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
   const [messages, setMessages] = useState<string[]>([]);
 
   const connect = useCallback((roomHash: string) => {
@@ -28,19 +29,25 @@ export const useRTC = () => {
     drone = new window.Scaledrone("yiS12Ts5RdNhebyM"); // should be change own secret
     drone.on("open", (error: unknown) => {
       if (error) {
-        return console.error(error);
+        setError("Failed to connect to signaling server");
+        console.error(error);
+        return;
       }
       room = drone.subscribe(roomName);
       room.on("open", (error: unknown) => {
         if (error) {
-          return console.error(error);
+          setError("Failed to connect to signaling server");
+          console.error(error);
+          return;
         }
         console.log("Connected to signaling server");
       });
       // @ts-ignore
       room.on("members", (members) => {
         if (members.length >= 3) {
-          return alert("The room is full");
+          setError("The room is full");
+          console.error("The room is full");
+          return;
         }
         // 1st: waiter, 2nd: offerer
         const isOfferer = members.length === 2;
@@ -71,9 +78,11 @@ export const useRTC = () => {
       if (isOfferer) {
         // offerer: create negotiation offer
         pc.onnegotiationneeded = () => {
-          pc.createOffer(localDescCreated, (error: unknown) =>
-            console.error(error)
-          );
+          pc.createOffer(localDescCreated, (error: unknown) => {
+            setError("Failed to create offer");
+            console.error(error);
+            return;
+          });
         };
         dataChannel = pc.createDataChannel("chat");
         setupDataChannel();
@@ -109,12 +118,18 @@ export const useRTC = () => {
               // create answer
               if (pc.remoteDescription.type === "offer") {
                 console.log("Answering offer");
-                pc.createAnswer(localDescCreated, (error: unknown) =>
-                  console.error(error)
-                );
+                pc.createAnswer(localDescCreated, (error: unknown) => {
+                  setError("Failed to create answer");
+                  console.error(error);
+                  return;
+                });
               }
             },
-            (error: unknown) => console.error(error)
+            (error: unknown) => {
+              setError("Failed to set remote description");
+              console.error(error);
+              return;
+            }
           );
         } else if (message.candidate) {
           // add the new ICE candidate to our connections remote description
@@ -128,7 +143,11 @@ export const useRTC = () => {
       pc.setLocalDescription(
         desc,
         () => sendSignalingMessage({ sdp: pc.localDescription }),
-        (error: unknown) => console.error(error)
+        (error: unknown) => {
+          setError("Failed to set local description");
+          console.error(error);
+          return;
+        }
       );
     }
 
@@ -150,7 +169,11 @@ export const useRTC = () => {
       console.log("WebRTC channel state is:", dataChannel.readyState);
       if (dataChannel.readyState === "open") {
         setIsConnected(true);
-        console.log("connected");
+        const msg = JSON.stringify({
+          type: "system",
+          message: "WebRTC data channel is now open",
+        });
+        setMessages([msg]);
       }
     }
   }, []);
@@ -162,6 +185,7 @@ export const useRTC = () => {
 
   return {
     isConnected,
+    error,
     messages,
     connect,
     send,

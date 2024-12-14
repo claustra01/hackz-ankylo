@@ -11,4 +11,9 @@ export type ShootArrowMessage = {
 	dir: Vector3;
 };
 
-export type RTCMessage = SetTargetMessage | ShootArrowMessage;
+export type SystemMessage = {
+	type: "system";
+	message: string;
+};
+
+export type RTCMessage = SetTargetMessage | ShootArrowMessage | SystemMessage;
