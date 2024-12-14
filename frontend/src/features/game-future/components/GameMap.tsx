@@ -10,11 +10,11 @@ interface GameMapProps {
 const GameMap = ({ targetInfos }: GameMapProps) => {
 	return (
 		<>
-			<directionalLight position={[0, 1, 1]} intensity={5} />
+			<directionalLight position={[100, 60, 100]} intensity={15} />
 			<Ground position={[0, -2, 0]} scale={{ x: 100, z: 100 }} />
 			<Sky
 				distance={450000}
-				sunPosition={[0, 1, 0]}
+				sunPosition={[100, 60, 100]}
 				inclination={0}
 				azimuth={0.25}
 			/>

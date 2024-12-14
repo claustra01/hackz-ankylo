@@ -1,5 +1,4 @@
 import { OrbitControls } from "@react-three/drei";
-import { Sphere } from "@react-three/drei";
 import { Canvas, useThree } from "@react-three/fiber";
 import { Physics } from "@react-three/rapier";
 import { useState } from "react";
@@ -52,9 +51,6 @@ function App() {
 			<Physics>
 				<GameMap targetInfos={targetInfos} />
 				<OrbitControls />
-				<Sphere position={[0, 0, 0]} scale={0.1}>
-					<meshStandardMaterial color="blue" />
-				</Sphere>
 				<TargetPuttingCollider center={[0, 0, 0]} radius={10} />
 				<DebugCubeProducer
 					timeSpan={1000}
