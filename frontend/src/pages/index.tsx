@@ -1,9 +1,9 @@
 import { Canvas } from "@react-three/fiber";
 import { Physics } from "@react-three/rapier";
 import * as THREE from "three";
-import DebugCubeProducer from "../features/debug/components/DebugCubeProducer";
-import GameMap from "../features/game-future/components/GameMap";
-import PlacePlayerOperation from "../features/game-future/components/PlacePlayerOperation";
+import GameMap from "../components/GameMap";
+import DebugCubeProducer from "../components/debug/DebugCubeProducer";
+import PlacePlayerOperation from "../components/placePlayer/PlacePlayerOperation";
 
 function App() {
 	return (
