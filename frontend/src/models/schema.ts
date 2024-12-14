@@ -10,3 +10,5 @@ export type ShootArrowMessage = {
 	pos: Vector3;
 	dir: Vector3;
 };
+
+export type RTCMessage = SetTargetMessage | ShootArrowMessage;
