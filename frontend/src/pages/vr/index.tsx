@@ -13,16 +13,20 @@ function App() {
 	const buttonWidth = 200;
 
 	return (
-		<div style={{
-			position: "relative",
-			width: "100vw",
-			height: "100vh",
-		}}>
+		<div
+			style={{
+				position: "relative",
+				width: "100vw",
+				height: "100vh",
+			}}
+		>
 			<SignalingServer />
-			<Canvas style={{
-				width: "100%",
-				height: "100%",
-			}}>
+			<Canvas
+				style={{
+					width: "100%",
+					height: "100%",
+				}}
+			>
 				<Physics gravity={[0, -9.81, 0]}>
 					<GameMap />
 					<VRPlayer store={store} />
