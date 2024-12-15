@@ -5,6 +5,7 @@ import * as THREE from "three";
 import type TargetInfo from "../../models/TargetInfo";
 import { computePlacementPosition } from "../../utils/targetPlacement";
 import { throwArrow } from "../../utils/throwArrow";
+import { Loading } from "../Loading";
 import Target from "../Target";
 import { useRTC } from "./../../hook/useRTC";
 import PlacePlayer from "./PlacePlayer";
@@ -106,6 +107,10 @@ const PlacePlayerOperation = () => {
 			}),
 		);
 	};
+
+	if (isReady && !isConnected) {
+		return <Loading />;
+	}
 
 	return (
 		<>

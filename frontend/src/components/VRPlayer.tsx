@@ -13,6 +13,7 @@ import type { Group, Mesh } from "three";
 import { useRTC } from "../hook/useRTC";
 import type TargetInfo from "../models/TargetInfo";
 import { throwArrow } from "../utils/throwArrow";
+import { Loading } from "./Loading";
 import Target from "./Target";
 interface VRPlayerProps {
 	store: XRStore;
@@ -129,6 +130,10 @@ export const VRPlayer = ({ store }: VRPlayerProps) => {
 			prevTargetInfos.filter((targetInfo) => targetInfo.id !== id),
 		);
 	};
+
+	if (isReady && !isConnected) {
+		return <Loading />;
+	}
 
 	return (
 		<>
