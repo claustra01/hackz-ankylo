@@ -100,6 +100,14 @@ const PlacePlayerOperation = () => {
 			(targetInfo) => targetInfo.id === id,
 		)[0];
 
+		send(
+			JSON.stringify({
+				type: "shoot-arrow",
+				pos: shootedTarget.position,
+				dir: shootedTarget.facingDirection,
+			}),
+		);
+
 		setTargetInfos((prevTargetInfos: TargetInfo[]) =>
 			prevTargetInfos.filter((targetInfo) => targetInfo.id !== id),
 		);
