@@ -5,6 +5,7 @@ import * as THREE from "three";
 import type TargetInfo from "../../models/TargetInfo";
 import { computePlacementPosition } from "../../utils/targetPlacement";
 import { throwArrow } from "../../utils/throwArrow";
+import ExplosionParticles from "../ExplosionParticles";
 import { Loading } from "../Loading";
 import Target from "../Target";
 import { useRTC } from "./../../hook/useRTC";
@@ -16,6 +17,9 @@ const PlacePlayerOperation = () => {
 	const [targetInfos, setTargetInfos] = useState<TargetInfo[]>([]);
 	const { camera, scene } = useThree();
 	const { isConnected, messages, connect, send } = useRTC();
+	const [particlePosition, setParticlePosition] = useState<
+		[number, number, number]
+	>([0, -100, 0]);
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	const arrowRigitRef = useRef<any>(null);
 
@@ -92,20 +96,19 @@ const PlacePlayerOperation = () => {
 	}, [scene, camera, targetInfos, isReady, isConnected, send]);
 
 	const handleShoot = (id: number) => {
+		const shootedTarget = targetInfos.filter(
+			(targetInfo) => targetInfo.id === id,
+		)[0];
+
 		setTargetInfos((prevTargetInfos: TargetInfo[]) =>
 			prevTargetInfos.filter((targetInfo) => targetInfo.id !== id),
 		);
 
-		const shootedTarget = targetInfos.filter(
-			(targetInfo) => targetInfo.id === id,
-		)[0];
-		send(
-			JSON.stringify({
-				type: "shoot-arrow",
-				pos: shootedTarget.position,
-				dir: shootedTarget.facingDirection,
-			}),
-		);
+		setParticlePosition([
+			shootedTarget.position.x,
+			shootedTarget.position.y,
+			shootedTarget.position.z,
+		]);
 	};
 
 	if (isReady && !isConnected) {
@@ -123,6 +126,7 @@ const PlacePlayerOperation = () => {
 					onShoot={handleShoot}
 				/>
 			))}
+			<ExplosionParticles pos={particlePosition} color={"red"} />
 			<RigidBody ref={arrowRigitRef} name="arrow">
 				<mesh scale={[0.25, 0.25, 0.25]} position={[0, 0, 0]}>
 					<sphereGeometry />

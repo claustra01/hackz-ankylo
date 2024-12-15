@@ -1,4 +1,4 @@
-import type { Vector3 } from "@react-three/fiber";
+import type { Vector3 } from "three";
 
 /**
  * TargetInfo is a model that contains the information of a target
