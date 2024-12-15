@@ -5,11 +5,17 @@ import GameMap from "../../components/GameMap";
 import PlacePlayerOperation from "../../components/placePlayer/PlacePlayerOperation";
 import { SignalingServer } from "../../components/webrtc/SignalingServer";
 
+const canvasStyle = {
+	width: "100vw",
+	height: "100vh",
+	overflow: "hidden",
+};
+
 function App() {
 	return (
 		<>
 			<SignalingServer />
-			<Canvas style={{ width: "100vw", height: "100vh" }}>
+			<Canvas style={canvasStyle}>
 				<Physics gravity={[0, -9.81, 0]}>
 					<GameMap />
 					<PlacePlayerOperation />
