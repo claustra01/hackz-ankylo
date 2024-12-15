@@ -49,7 +49,7 @@ export const VRPlayer = ({ store }: VRPlayerProps) => {
 		if (data.type === "set-target") {
 			const newTarget: TargetInfo = {
 				id: targetNum,
-				position: data.pos,
+				position: new Vector3(data.pos.x, data.pos.y, data.pos.z),
 				facingDirection: new Vector3(0, 0, 0),
 			};
 			setTargetNum((prev) => prev + 1);
