@@ -9,13 +9,18 @@ type ParticleStatus = {
 	birthTime: number;
 };
 
+type Props = {
+	pos: [number, number, number];
+	color?: string;
+};
+
 const PARTICLE_LIFETIME = 5;
 
-const ExplosionParticles = () => {
+const ExplosionParticles = ({ pos, color }: Props) => {
 	const [particles, setParticles] = useState<ParticleStatus[]>([]);
 
 	useEffect(() => {
-		const particleCount = 200; // パーティクルの個数
+		const particleCount = 20; // パーティクルの個数
 		const newParticles = [];
 
 		for (let i = 0; i < particleCount; i++) {
@@ -26,11 +31,11 @@ const ExplosionParticles = () => {
 			const z = Math.sin(angle) * distance;
 
 			newParticles.push({
-				position: new Vector3(x, y, z),
+				position: new Vector3(pos[0] + x, pos[1] + y, pos[2] + z),
 				velocity: new Vector3(
-					Math.random() * 0.4 - 0.2,
-					Math.random() * 0.4 - 0.2,
-					Math.random() * 0.4 - 0.2,
+					Math.random() * 0.2 - 0.1,
+					Math.random() * 0.2 - 0.1,
+					Math.random() * 0.2 - 0.1,
 				),
 				// パーティクルが生成された時刻を記録
 				birthTime: Date.now(),
@@ -38,7 +43,7 @@ const ExplosionParticles = () => {
 		}
 
 		setParticles(newParticles);
-	}, []);
+	}, [pos]);
 
 	useFrame(() => {
 		setParticles((prevParticles) =>
@@ -63,11 +68,11 @@ const ExplosionParticles = () => {
 		<>
 			{particles.map((particle, _) => (
 				<Box
-					key={Math.random.toString()}
+					key={Math.random().toString()}
 					position={particle.position}
-					args={[0.2, 0.2, 0.2]}
+					args={[0.3, 0.3, 0.3]}
 				>
-					<meshBasicMaterial color="red" />
+					<meshBasicMaterial color={color} />
 				</Box>
 			))}
 		</>
