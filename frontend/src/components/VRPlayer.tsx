@@ -147,7 +147,7 @@ export const VRPlayer = ({ store }: VRPlayerProps) => {
 					<boxGeometry />
 					<meshStandardMaterial color="cyan" metalness={0} roughness={0.2} />
 				</mesh>
-				<RigidBody ref={arrowRigidRef}>
+				<RigidBody ref={arrowRigidRef} name="arrow">
 					<mesh scale={[0.25, 0.25, 0.25]} position={[0, 0, 0]}>
 						<sphereGeometry />
 						<meshStandardMaterial color="cyan" metalness={0} roughness={0.2} />
