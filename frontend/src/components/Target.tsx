@@ -36,6 +36,29 @@ const Target = ({ targetInfo, onShoot }: TargetProps) => {
 			>
 				<meshStandardMaterial color="red" />
 			</Cylinder>
+			<Cylinder
+				onUpdate={(self) => {
+					self.lookAt(new THREE.Vector3(0, 0, 0));
+					self.rotateX(Math.PI / 2);
+				}}
+				args={[1, 1, 1, 32]}
+				position={targetInfo.position}
+				scale={[0.7, 0.32, 0.7]}
+			>
+				<meshStandardMaterial color="white" />
+			</Cylinder>
+			<Cylinder
+				onUpdate={(self) => {
+					self.lookAt(new THREE.Vector3(0, 0, 0));
+					self.rotateX(Math.PI / 2);
+				}}
+				args={[1, 1, 1, 32]}
+				position={targetInfo.position}
+				scale={[0.3, 0.34, 0.3]}
+				rotation={[Math.PI / 2, 0, 0]}
+			>
+				<meshStandardMaterial color="red" />
+			</Cylinder>
 		</RigidBody>
 	);
 };
