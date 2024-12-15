@@ -1,3 +1,4 @@
+import { Cylinder } from "@react-three/drei";
 import { useThree } from "@react-three/fiber";
 import { RigidBody } from "@react-three/rapier";
 import { useEffect, useRef, useState } from "react";
@@ -18,6 +19,7 @@ const PlacePlayerOperation = () => {
 	const { isConnected, messages, connect, send } = useRTC();
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	const arrowRigitRef = useRef<any>(null);
+	const arrowRef = useRef<THREE.Mesh>(null);
 
 	// connect to signaling server
 	useEffect(() => {
@@ -38,7 +40,7 @@ const PlacePlayerOperation = () => {
 		const data = JSON.parse(message);
 		if (data.type === "shoot-arrow") {
 			console.log("shoot-arrow");
-			throwArrow(data.pos, data.dir, arrowRigitRef);
+			throwArrow(data.pos, data.dir, arrowRigitRef, arrowRef);
 		}
 	}, [messages]);
 
@@ -124,10 +126,9 @@ const PlacePlayerOperation = () => {
 				/>
 			))}
 			<RigidBody ref={arrowRigitRef} name="arrow">
-				<mesh scale={[0.25, 0.25, 0.25]} position={[0, 0, 0]}>
-					<sphereGeometry />
+				<Cylinder args={[0.03, 0.03, 1, 32]} ref={arrowRef}>
 					<meshStandardMaterial color="cyan" metalness={0} roughness={0.2} />
-				</mesh>
+				</Cylinder>
 			</RigidBody>
 		</>
 	);

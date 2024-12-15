@@ -8,8 +8,8 @@ interface ArrowProps {
 export const Arrow = ({ arrowRigidBody }: ArrowProps) => {
 	return (
 		<RigidBody ref={arrowRigidBody}>
-			<mesh scale={[0.25, 0.25, 0.25]} position={[0, 0, 0]}>
-				<sphereGeometry />
+			<mesh position={[0, 0, 0]}>
+				<cylinderGeometry args={[0.1, 0.1, 1, 32]} />
 				<meshStandardMaterial color="cyan" metalness={0} roughness={0.2} />
 			</mesh>
 		</RigidBody>
