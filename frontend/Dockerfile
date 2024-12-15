@@ -17,6 +17,7 @@ ADD nginx.conf /etc/nginx/conf.d/default.conf
 
 COPY --from=builder /app/dist/index.html .
 COPY --from=builder /app/dist/assets/ ./assets/
+COPY --from=builder /app/dist/Roboto-Medium.json .
 COPY --from=builder /app/dist/vite.svg .
 
 EXPOSE 80
