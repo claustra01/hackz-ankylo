@@ -149,11 +149,11 @@ export const VRPlayer = ({ store }: VRPlayerProps) => {
 					</mesh>
 				</RigidBody>
 				{targetInfo.map((targetInfo) => (
-						<Target
-							key={targetInfo.id}
-							targetInfo={targetInfo}
-							onShoot={handleShoot}
-						/>
+					<Target
+						key={targetInfo.id}
+						targetInfo={targetInfo}
+						onShoot={handleShoot}
+					/>
 				))}
 				<Locomotion />
 			</XR>
