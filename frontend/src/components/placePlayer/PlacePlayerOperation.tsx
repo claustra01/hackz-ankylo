@@ -99,7 +99,7 @@ const PlacePlayerOperation = () => {
 		const shootedTarget = targetInfos.filter(
 			(targetInfo) => targetInfo.id === id,
 		)[0];
-		
+
 		send(
 			JSON.stringify({
 				type: "shoot-arrow",
