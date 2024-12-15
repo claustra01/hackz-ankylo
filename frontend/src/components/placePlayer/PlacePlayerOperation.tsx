@@ -126,7 +126,7 @@ const PlacePlayerOperation = () => {
 				/>
 			))}
 			<RigidBody ref={arrowRigitRef} name="arrow">
-				<Cylinder args={[0.2, 0.2, 2, 32]} ref={arrowRef}>
+				<Cylinder args={[0.03, 0.03, 1, 32]} ref={arrowRef}>
 					<meshStandardMaterial color="cyan" metalness={0} roughness={0.2} />
 				</Cylinder>
 			</RigidBody>
