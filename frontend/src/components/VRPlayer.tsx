@@ -1,4 +1,3 @@
-import { Cylinder } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { RigidBody } from "@react-three/rapier";
 import {
@@ -30,7 +29,6 @@ export const VRPlayer = ({ store }: VRPlayerProps) => {
 	const rightMeshRef = useRef<Mesh>(null);
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	const arrowRigidRef = useRef<any>(null);
-	const arrowRef = useRef<Mesh>(null);
 
 	// connect to signaling server
 	useEffect(() => {
@@ -111,9 +109,8 @@ export const VRPlayer = ({ store }: VRPlayerProps) => {
 		const rotateVector3 = leftControllerPos.sub(rightControllerPos);
 		throwArrow(
 			leftControllerPos,
-			rotateVector3.multiplyScalar(0.5),
+			rotateVector3.multiplyScalar(5),
 			arrowRigidRef,
-			arrowRef,
 		);
 		//ShootArrowMessageのjsonにする
 		const message = JSON.stringify({
@@ -151,9 +148,10 @@ export const VRPlayer = ({ store }: VRPlayerProps) => {
 					<meshStandardMaterial color="cyan" metalness={0} roughness={0.2} />
 				</mesh>
 				<RigidBody ref={arrowRigidRef} name="arrow">
-					<Cylinder args={[0.03, 0.03, 1, 32]} ref={arrowRef}>
+					<mesh scale={[0.25, 0.25, 0.25]} position={[0, 0, 0]}>
+						<sphereGeometry />
 						<meshStandardMaterial color="cyan" metalness={0} roughness={0.2} />
-					</Cylinder>
+					</mesh>
 				</RigidBody>
 				{targetInfo.map((targetInfo) => (
 					<Target
