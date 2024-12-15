@@ -14,6 +14,7 @@ import type { Group, Mesh } from "three";
 import { useRTC } from "../hook/useRTC";
 import type TargetInfo from "../models/TargetInfo";
 import { throwArrow } from "../utils/throwArrow";
+import ExplosionParticles from "./ExplosionParticles";
 import { Loading } from "./Loading";
 import Target from "./Target";
 interface VRPlayerProps {
@@ -25,6 +26,9 @@ export const VRPlayer = ({ store }: VRPlayerProps) => {
 	const [isReady, setIsReady] = useState(false);
 	const [rightGrab, setRightGrab] = useState(false);
 	const [targetInfo, setTargetInfo] = useState<TargetInfo[]>([]);
+	const [particlePosition, setParticlePosition] = useState<
+		[number, number, number]
+	>([0, -100, 0]);
 	const { isConnected, messages, connect, send } = useRTC();
 	const leftMeshRef = useRef<Mesh>(null);
 	const rightMeshRef = useRef<Mesh>(null);
@@ -129,9 +133,17 @@ export const VRPlayer = ({ store }: VRPlayerProps) => {
 	};
 
 	const handleShoot = (id: number) => {
+		const shootedTarget = targetInfo.filter((a) => a.id === id)[0];
+
 		setTargetInfo((prevTargetInfos: TargetInfo[]) =>
 			prevTargetInfos.filter((targetInfo) => targetInfo.id !== id),
 		);
+
+		setParticlePosition([
+			shootedTarget.position.x,
+			shootedTarget.position.y,
+			shootedTarget.position.z,
+		]);
 	};
 
 	if (isReady && !isConnected) {
@@ -162,6 +174,7 @@ export const VRPlayer = ({ store }: VRPlayerProps) => {
 						onShoot={handleShoot}
 					/>
 				))}
+				<ExplosionParticles pos={particlePosition} color={"red"} />
 				<Locomotion />
 			</XR>
 		</>
