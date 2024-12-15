@@ -16,7 +16,7 @@ type Props = {
 
 const PARTICLE_LIFETIME = 5;
 
-const ExplosionParticles = ({pos, color}: Props) => {
+const ExplosionParticles = ({ pos, color }: Props) => {
 	const [particles, setParticles] = useState<ParticleStatus[]>([]);
 
 	useEffect(() => {
@@ -31,11 +31,7 @@ const ExplosionParticles = ({pos, color}: Props) => {
 			const z = Math.sin(angle) * distance;
 
 			newParticles.push({
-				position: new Vector3(
-					pos[0] + x,
-					pos[1] + y,
-					pos[2] + z,
-				),
+				position: new Vector3(pos[0] + x, pos[1] + y, pos[2] + z),
 				velocity: new Vector3(
 					Math.random() * 0.2 - 0.1,
 					Math.random() * 0.2 - 0.1,
@@ -47,7 +43,7 @@ const ExplosionParticles = ({pos, color}: Props) => {
 		}
 
 		setParticles(newParticles);
-	}, []);
+	}, [pos]);
 
 	useFrame(() => {
 		setParticles((prevParticles) =>
