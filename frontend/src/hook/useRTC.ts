@@ -174,11 +174,16 @@ export const useRTC = () => {
 					message: "WebRTC data channel is now open",
 				});
 				setMessages([msg]);
+			} else {
+				setIsConnected(false);
 			}
 		}
 	}, []);
 
 	const send = (message: string) => {
+		if (!isConnected) {
+			return;
+		}
 		setMessages((prev) => [message, ...prev]);
 		dataChannel.send(message);
 	};
